@@ -202,11 +202,17 @@
         </div>
     </div>
     <h2> Popular </h2>
-    <ul>
+    <ul class="movielist">
         <li v-for="movie in movies" :key="movie.id">
             <Movie :movie="movie" />
         </li>
     </ul>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#" @click.prevent="previousPage">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#" @click.prevent="nextPage">Next</a></li>
+        </ul>
+    </nav>
 </div>
 </template>
 
@@ -218,8 +224,9 @@ export default {
         return {
             movies: [],
             selectedGenre: String,
-            selectedYear: String,
-            selectedRating: String
+            selectedYear: '',
+            selectedRating: String,
+            pageNum: 1,
         }
     },
     created: function() {
@@ -228,18 +235,10 @@ export default {
     methods: {
         fetchData: async function() {
             try {
-                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd')
+                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd' + '&page=' + this.pageNum)
                 const movies = await res.json()
                 this.movies = movies.results
-            } catch (e) {
-                console.log(e)
-            }
-        },
-        fetchByGenre: async function() {
-            try {
-                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd&with_genres=' + this.selectedGenre)
-                const movies = await res.json()
-                this.movies = movies.results
+                console.log(movies);
             } catch (e) {
                 console.log(e)
             }
@@ -247,15 +246,6 @@ export default {
         getGenre: function() {
             this.selectedGenre = document.getElementById("genreList").value;
             console.log(this.selectedGenre);
-        },
-        fetchByYear: async function() {
-            try {
-                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd&year=' + this.selectedYear)
-                const movies = await res.json()
-                this.movies = movies.results
-            } catch (e) {
-                console.log(e)
-            }
         },
         getYear: function() {
             this.selectedYear = document.getElementById("yearList").value;
@@ -267,12 +257,24 @@ export default {
         },
         filter: async function() {
             try {
-                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd&year=' + this.selectedYear + '&with_genres=' + this.selectedGenre + '&vote_average.lte=' + this.selectedRating)
+                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd&year=' + this.selectedYear + '&with_genres=' + this.selectedGenre + '&vote_average.lte=' + this.selectedRating + '&page=' + this.pageNum)
                 const movies = await res.json()
                 this.movies = movies.results
             } catch (e) {
                 console.log(e)
             }
+        },
+        nextPage: function() {
+            this.pageNum += 1;
+            this.fetchData()
+            console.log(this.pageNum);
+        },
+        previousPage: function() {
+            if (this.pageNum !== 1) {
+                this.pageNum -= 1;
+                this.fetchData();
+                }
+            console.log(this.pageNum);
         }
     },
     components: {
@@ -287,7 +289,7 @@ export default {
         padding-left: 2rem;
         padding-right: 2rem;
     }
-    ul {
+    .movielist {
         display: grid;
         list-style: none;
         padding: 1rem;
@@ -302,5 +304,9 @@ export default {
     }
     button {
         width: 100%;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
     }
 </style>
