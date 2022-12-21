@@ -1,4 +1,5 @@
 # MovieApp
+View at https://tinas-movie-app.netlify.app/
 
 ## Project setup
 ```

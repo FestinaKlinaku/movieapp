@@ -306,8 +306,18 @@ export default {
     button {
         width: 100%;
     }
+    .btn:hover {
+        background: var(--bs-btn-hover-color);
+        color: var(--bs-btn-hover-bg);
+        border: none;
+    }
     .pagination {
         display: flex;
         justify-content: center;
+    }
+    .page-link {
+        background-color: var(--bs-pagination-color);
+        color: #fff;
+        border: none;
     }
 </style>
