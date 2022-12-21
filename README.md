@@ -1,4 +1,4 @@
-# vue-starter
+# MovieApp
 
 ## Project setup
 ```

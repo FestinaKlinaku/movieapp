@@ -223,9 +223,9 @@ export default {
     data() {
         return {
             movies: [],
-            selectedGenre: String,
+            selectedGenre: '',
             selectedYear: '',
-            selectedRating: String,
+            selectedRating: '',
             pageNum: 1,
         }
     },
@@ -257,9 +257,10 @@ export default {
         },
         filter: async function() {
             try {
-                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd&year=' + this.selectedYear + '&with_genres=' + this.selectedGenre + '&vote_average.lte=' + this.selectedRating + '&page=' + this.pageNum)
+                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd' + '&year=' + this.selectedYear + '&with_genres=' + this.selectedGenre + '&vote_average.lte=' + this.selectedRating)
                 const movies = await res.json()
                 this.movies = movies.results
+                console.log(movies);
             } catch (e) {
                 console.log(e)
             }
