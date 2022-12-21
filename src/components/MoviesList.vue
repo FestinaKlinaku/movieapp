@@ -227,6 +227,7 @@ export default {
             selectedYear: '',
             selectedRating: '',
             pageNum: 1,
+            totalPages: 1
         }
     },
     created: function() {
@@ -238,7 +239,8 @@ export default {
                 const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd' + '&page=' + this.pageNum)
                 const movies = await res.json()
                 this.movies = movies.results
-                console.log(movies);
+                this.totalPages = movies.total_pages
+                console.log(movies)
             } catch (e) {
                 console.log(e)
             }
@@ -265,16 +267,38 @@ export default {
                 console.log(e)
             }
         },
+        filterByPage: async function() {
+            try {
+                const res = await fetch('https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=ab8356e075fc49f45bcecd2802a2c5dd' + '&year=' + this.selectedYear + '&with_genres=' + this.selectedGenre + '&vote_average.lte=' + this.selectedRating + '&page=' + this.pageNum)
+                const movies = await res.json()
+                this.movies = movies.results
+                console.log(movies);
+            } catch (e) {
+                console.log(e)
+            }
+        },
         nextPage: function() {
-            this.pageNum += 1;
-            this.fetchData()
+            if (this.pageNum < this.totalPages) {
+                this.pageNum += 1;
+            }
+            if (this.selectedGenre !== '' || this.selectedYear !== '' || this.selectedRating !== '') {
+                this.filterByPage();
+            }
+            else {
+                this.fetchData();
+            }
             console.log(this.pageNum);
         },
         previousPage: function() {
             if (this.pageNum !== 1) {
                 this.pageNum -= 1;
+            }
+            if (this.selectedGenre !== '' || this.selectedYear !== '' || this.selectedRating !== '') {
+                this.filterByPage();
+            }
+            else {
                 this.fetchData();
-                }
+            }
             console.log(this.pageNum);
         }
     },
@@ -318,6 +342,11 @@ export default {
     .page-link {
         background-color: var(--bs-pagination-color);
         color: #fff;
+        border: none;
+    }
+    .page-link:hover {
+        background: #fff;
+        color: var(--bs-pagination-color);
         border: none;
     }
 </style>
