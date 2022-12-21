@@ -196,7 +196,7 @@
                     <option value="10">10</option>
                 </select>
             </div>
-            <div class="col-1">
+            <div class="col col-md-2 col-lg-2">
                 <button type="button" class="btn btn-primary" v-on:click="filter">Filter</button>
             </div>
         </div>
